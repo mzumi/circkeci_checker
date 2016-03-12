@@ -1,0 +1,11 @@
+[package]
+name = "circleci-checker"
+version = "0.1.0"
+authors = ["mzumi <masazumi.m@gmail.com>"]
+
+[dependencies]
+hyper = "*"
+json_macros = "*"
+rustc-serialize = "*"
+dotenv = "*"
+dotenv_macros = "*"

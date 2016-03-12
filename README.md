@@ -1,0 +1,1 @@
+# CircleCI checker on bitbar
