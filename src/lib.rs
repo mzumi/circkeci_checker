@@ -1,6 +1,7 @@
 #![feature(plugin)]
 #![plugin(dotenv_macros)]
-#[macro_use] extern crate hyper;
+extern crate hyper;
+extern crate hyper_native_tls;
 
 pub mod status;
 pub mod service;
