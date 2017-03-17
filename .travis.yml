@@ -28,6 +28,6 @@ after_success: |
   sudo make install &&
   cd ../.. &&
   rm -rf kcov-master &&
-  for file in target/debug/circleci-checker-*; do mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+  kcov --exclude-pattern=/.cargo,/usr/lib --verify target/cov target/debug/circleci_checker-* &&
   bash <(curl -s https://codecov.io/bash) &&
   echo "Uploaded code coverage"
