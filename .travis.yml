@@ -1,6 +1,9 @@
 language: rust
 rust:
   - nightly
+  - beta
+  - stable
+
 before_script:
   - cp .env.sample .env
 after_success: |
