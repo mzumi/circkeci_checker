@@ -7,3 +7,5 @@ extern crate rustc_serialize;
 pub mod status;
 pub mod service;
 pub mod response;
+
+pub use self::status::Status;

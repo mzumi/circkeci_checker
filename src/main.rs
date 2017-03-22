@@ -15,7 +15,7 @@ fn main() {
                 _ => continue
             };
 
-            let status = circleci_checker::status::get(recent_build.outcome.as_str()).expect("ビルド状態が未定義です");
+            let status = circleci_checker::Status::get(recent_build.outcome.as_str()).expect("ビルド状態が未定義です");
             println!("- {} {} | color={} href={}", status.symbol(), branch_name.replace("%2F", "/"), status.color(), url);
         }
         println!("---")
