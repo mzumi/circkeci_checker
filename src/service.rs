@@ -10,9 +10,10 @@ use rustc_serialize::json;
 use std::io::Read;
 
 use response::*;
+use error::*;
 
-pub fn fetch_projects() -> Vec<Project> {
-    let tls = NativeTlsClient::new().unwrap();
+pub fn fetch_projects() -> Result<Vec<Project>, Error> {
+    let tls = NativeTlsClient::new()?;
     let connector = HttpsConnector::new(tls);
     let client = Client::with_connector(connector);
     let url = format!("https://circleci.com/api/v1/projects?circle-token={}", dotenv!("CIRCLECI_TOKEN"));
@@ -20,10 +21,10 @@ pub fn fetch_projects() -> Vec<Project> {
     .header(Accept(vec![
         qitem(Mime(TopLevel::Application, SubLevel::Json,vec![])),
     ]))
-    .send().unwrap();
+    .send()?;
 
     let mut body = String::new();
-    res.read_to_string(&mut body).unwrap();
+    res.read_to_string(&mut body)?;
 
-    json::decode(&body).unwrap()
+    json::decode(&body).map_err(|e| From::from(e))
 }
