@@ -1,11 +1,21 @@
 extern crate circleci_checker;
 extern crate rustc_serialize;
 
+use std::error::Error;
+
 fn main() {
+    match print_projects() {
+        Ok(()) => return ,
+        Err(ref error) => println!("{}", error.description()),
+    }
+}
+
+fn print_projects() -> Result<(), circleci_checker::Error>{
+    let projects = circleci_checker::service::fetch_projects()?;
+
     println!("CircleCI");
     println!("---");
 
-    let projects = circleci_checker::service::fetch_projects();
     for project in projects {
         println!("{}/{} | href={}", project.username, project.reponame, project.vcs_url);
         for (branch_name, branch) in project.branches {
@@ -20,4 +30,5 @@ fn main() {
         }
         println!("---")
     }
+    Ok(())
 }
