@@ -10,7 +10,7 @@ pub struct Project {
 
 #[derive(Debug, RustcDecodable)]
 pub struct Branch {
-    pub pusher_logins: Vec<String>,
+    //pub pusher_logins: Vec<String>,
     //pub last_non_success: BuildStatus,
     //pub last_success: BuildStatus,
     pub recent_builds: Option<Vec<BuildStatus>>,
