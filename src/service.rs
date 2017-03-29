@@ -122,4 +122,11 @@ mod tests {
             assert_eq!(projects.err().unwrap().description(), "decoder error");
         });
     }
+
+    #[test]
+    fn connection_error() {
+        let projects = fetch_projects();
+        assert!(projects.is_err());
+        assert_eq!(projects.err().unwrap().description(), "connection refused");
+    }
 }
