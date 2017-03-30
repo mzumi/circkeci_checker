@@ -2,7 +2,9 @@ language: rust
 script: cargo test -- --test-threads=1
 rust:
   - nightly
-
+os:
+  - linux
+  - osx
 before_script:
   - cp .env.sample .env
 before_install:
