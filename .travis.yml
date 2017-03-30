@@ -7,9 +7,6 @@ os:
   - osx
 before_script:
   - cp .env.sample .env
-before_install:
-  - sudo apt-get update
-
 addons:
   apt:
     packages:
