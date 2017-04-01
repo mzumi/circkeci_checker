@@ -5,4 +5,4 @@
 
 CircleCI のビルド状況を表示する BitBar プラグイン
 
-![circleci-checker](https://s3-ap-northeast-1.amazonaws.com/mzumi/github/circleci-checker.png "circleci-checker")
+<img src="https://s3-ap-northeast-1.amazonaws.com/mzumi/github/circleci-checker.png" width="480px" alt="circleci-checker">
