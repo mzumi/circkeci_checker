@@ -1,12 +1,33 @@
 language: rust
+cache: cargo
+
+env:
+  global:
+    - PROJECT_NAME=circleci_checker
+
 script: cargo test -- --test-threads=1
-rust:
-  - nightly
-  - beta
-  - stable
-os:
-  - linux
-  - osx
+
+matrix:
+  include:
+    - os: osx
+      rust: nightly
+      env: TARGET=x86_64-apple-darwin
+    - os: osx
+      rust: beta
+      env: TARGET=x86_64-apple-darwin
+    - os: osx
+      rust: stable
+      env: TARGET=x86_64-apple-darwin
+    - os: linux
+      rust: nightly
+      env: TARGET=x86_64-unknown-linux-gnu
+    - os: linux
+      rust: beta
+      env: TARGET=x86_64-unknown-linux-gnu
+    - os: linux
+      rust: stable
+      env: TARGET=x86_64-unknown-linux-gnu
+
 before_script:
   - cp .env.sample .env
 addons:
@@ -30,6 +51,22 @@ after_success: |
   sudo make install &&
   cd ../.. &&
   rm -rf kcov-master &&
-  for file in target/debug/circleci_checker-*; do  if [ -x $file ]; then mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; fi; done &&
+  for file in target/debug/${PROJECT_NAME}-*; do  if [ -x $file ]; then mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; fi; done &&
   bash <(curl -s https://codecov.io/bash) &&
   echo "Uploaded code coverage"
+
+before_deploy:
+  - cargo build --target $TARGET --release
+  - mkdir "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}"
+  - cp target/$TARGET/release/${PROJECT_NAME} README.md "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}"
+  - zip "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}.zip" -r "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: HM3n2WJZAbb1CLY9ZqgXIxCAtfvssms6M3OrL2xl0lw+Q95PFr1zXgiLVCvsZaQ8+gxUqr+dXcVapki9+7LBFjqUYDNq4aLo80gPY9B+V+ZZIyKPhyueBtxQefGX7cpPKE3gKcbrkt16RRvUCjrvoT7iGt1qRr5INIOjRH26AWy/OIB6/ytXjRZ7P4QkEIXSi/EznTCEm5H6nWCCa8+CM1TNz5yOwaDYcimTTQgJaMlzn1DCgDZ4+SB9wgV+gajkrp4SZEHDjToidOLVS8K6u4iH6zFtqlVxfNqHStB8biSMmthBl3AErEb5zaLTmg6gfuPHrK3+McA+HD7VGY5vNlWsWUHcYlqW6buKd4aEMJhcH0kyYAxscmQbdCrEyCfmpC3ji8LUHQ0Ure07Re7UvfvoUs6s3OXLkOPRWUTls4IP5g/Lu5t7PhVO/bOG6gkt+y7nLUx7f1Ikjc5pYyEYMZRVZMpl7Tou3UOfcGA4nwCH9CH9OmgzUIUFlknLpRsbAEZLjVPCvOCX18By7Q5klctNMkk08CcxActRN5yI0UFSI7HC9hh+fwikRXNrUlN5PF5oNvM5WxDcXra93+kJ/wLWb9xjx8Syl3aztHow7B5BhVxhVTQaoxmK2HxS3EoSLvndcLGUJ6K88vPkXzjwPQRXbK2YgShJNC0woQ/8EpU=
+  file: ${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}.zip
+  skip_cleanup: true
+  on:
+    condition: $TRAVIS_RUST_VERSION = stable
+    tags: true
