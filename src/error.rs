@@ -1,6 +1,7 @@
 use std::error;
 use std::fmt;
 use std::io;
+use std::env;
 use hyper;
 use hyper_native_tls::native_tls;
 use rustc_serialize::json;
@@ -11,6 +12,7 @@ pub enum Error {
     ConnectionError(hyper::Error),
     JSONError(json::DecoderError),
     IOError(io::Error),
+    ENVError(env::VarError),
 }
 
 impl fmt::Display for Error {
@@ -20,6 +22,7 @@ impl fmt::Display for Error {
             Error::ConnectionError(ref err) => err.fmt(f),
             Error::JSONError(ref err) => err.fmt(f),
             Error::IOError(ref err) => err.fmt(f),
+            Error::ENVError(ref err) => err.fmt(f),
         }
     }
 }
@@ -31,6 +34,7 @@ impl error::Error for Error {
             Error::ConnectionError(ref err) => err.description(),
             Error::JSONError(ref err) => err.description(),
             Error::IOError(ref err) => err.description(),
+            Error::ENVError(ref err) => err.description(),
         }
     }
 }
@@ -56,5 +60,11 @@ impl From<json::DecoderError> for Error {
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Error {
         Error::IOError(err)
+    }
+}
+
+impl From<env::VarError> for Error {
+    fn from(err: env::VarError) -> Error {
+        Error::ENVError(err)
     }
 }
