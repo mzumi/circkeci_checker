@@ -13,7 +13,7 @@ impl Status {
             Status::Failed => "red",
             Status::Cancel => "yellow",
             Status::Timedout => "gray",
-            Status::NotBuild =>  "gray",
+            Status::NotBuild => "gray",
         }
     }
 
@@ -23,7 +23,7 @@ impl Status {
             Status::Failed => "✖︎",
             Status::Cancel => "⚠",
             Status::Timedout => " ⃠",
-            Status::NotBuild =>  "•",
+            Status::NotBuild => "•",
         }
     }
 
@@ -34,7 +34,7 @@ impl Status {
             "cancel" => Some(Status::Cancel {}),
             "timedout" => Some(Status::Timedout {}),
             "no_tests" => Some(Status::NotBuild {}),
-            _ => None
+            _ => None,
         }
     }
 }
@@ -45,7 +45,7 @@ mod test {
 
     #[test]
     fn success_status() {
-        let status =  Status::get("success").unwrap();
+        let status = Status::get("success").unwrap();
         assert_eq!("green", status.color());
         assert_eq!("✔︎", status.symbol());
     }

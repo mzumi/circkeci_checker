@@ -26,12 +26,14 @@ pub fn fetch_projects() -> Result<Vec<Project>, Error> {
     let tls = NativeTlsClient::new()?;
     let connector = HttpsConnector::new(tls);
     let client = Client::with_connector(connector);
-    let url = format!("{}/api/v1/projects?circle-token={}", URL, dotenv!("CIRCLECI_TOKEN"));
+    let url = format!("{}/api/v1/projects?circle-token={}",
+                      URL,
+                      dotenv!("CIRCLECI_TOKEN"));
     let mut res = client.get(&url)
-    .header(Accept(vec![
+        .header(Accept(vec![
         qitem(Mime(TopLevel::Application, SubLevel::Json,vec![])),
     ]))
-    .send()?;
+        .send()?;
 
     let mut body = String::new();
     res.read_to_string(&mut body)?;
@@ -70,7 +72,8 @@ mod tests {
             }
         ]
         "#;
-        let url = format!("/api/v1/projects?circle-token={}", dotenv!("CIRCLECI_TOKEN"));
+        let url = format!("/api/v1/projects?circle-token={}",
+                          dotenv!("CIRCLECI_TOKEN"));
         mock("GET", url.as_str()).with_body(json).create_for(|| {
             let projects = fetch_projects().unwrap();
             let ref project = projects[0];
@@ -114,7 +117,8 @@ mod tests {
             }
         ]
         "#;
-        let url = format!("/api/v1/projects?circle-token={}", dotenv!("CIRCLECI_TOKEN"));
+        let url = format!("/api/v1/projects?circle-token={}",
+                          dotenv!("CIRCLECI_TOKEN"));
         mock("GET", url.as_str()).with_body(json).create_for(|| {
             println!("start invalid");
             let projects = fetch_projects();

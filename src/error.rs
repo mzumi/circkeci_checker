@@ -10,7 +10,7 @@ pub enum Error {
     TLSError(native_tls::Error),
     ConnectionError(hyper::Error),
     JSONError(json::DecoderError),
-    IOError(io::Error)
+    IOError(io::Error),
 }
 
 impl fmt::Display for Error {
