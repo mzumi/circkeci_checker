@@ -3,7 +3,7 @@ cache: cargo
 
 env:
   global:
-    - PROJECT_NAME=circleci_checker
+    - PROJECT_NAME=circleci-checker
 
 script: cargo test -- --test-threads=1
 
