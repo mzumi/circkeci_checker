@@ -7,6 +7,7 @@ use hyper::header::{Accept, qitem};
 use hyper::mime::{Mime, TopLevel, SubLevel};
 use rustc_serialize::json;
 
+use std::env;
 use std::io::Read;
 
 use response::*;
@@ -26,9 +27,9 @@ pub fn fetch_projects() -> Result<Vec<Project>, Error> {
     let tls = NativeTlsClient::new()?;
     let connector = HttpsConnector::new(tls);
     let client = Client::with_connector(connector);
-    let url = format!("{}/api/v1/projects?circle-token={}",
-                      URL,
-                      dotenv!("CIRCLECI_TOKEN"));
+    let token = env::var("CIRCLECI_TOKEN")?;
+
+    let url = format!("{}/api/v1/projects?circle-token={}", URL, token);
     let mut res = client.get(&url)
         .header(Accept(vec![
         qitem(Mime(TopLevel::Application, SubLevel::Json,vec![])),
@@ -49,6 +50,9 @@ mod tests {
 
     #[test]
     fn valid_json_response() {
+        dotenv::dotenv().expect("Failed to read .env file");
+        let token = env::var("CIRCLECI_TOKEN").unwrap();
+
         let json = r#"
         [
             {
@@ -72,8 +76,7 @@ mod tests {
             }
         ]
         "#;
-        let url = format!("/api/v1/projects?circle-token={}",
-                          dotenv!("CIRCLECI_TOKEN"));
+        let url = format!("/api/v1/projects?circle-token={}", token);
         mock("GET", url.as_str()).with_body(json).create_for(|| {
             let projects = fetch_projects().unwrap();
             let ref project = projects[0];
@@ -94,6 +97,8 @@ mod tests {
 
     #[test]
     fn invalid_json_response() {
+        dotenv::dotenv().expect("Failed to read .env file");
+        let token = env::var("CIRCLECI_TOKEN").unwrap();
         let json = r#"
         
             {
@@ -117,8 +122,7 @@ mod tests {
             }
         ]
         "#;
-        let url = format!("/api/v1/projects?circle-token={}",
-                          dotenv!("CIRCLECI_TOKEN"));
+        let url = format!("/api/v1/projects?circle-token={}", token);
         mock("GET", url.as_str()).with_body(json).create_for(|| {
             println!("start invalid");
             let projects = fetch_projects();
@@ -129,8 +133,18 @@ mod tests {
 
     #[test]
     fn connection_error() {
+        dotenv::dotenv().expect("Failed to read .env file");
         let projects = fetch_projects();
         assert!(projects.is_err());
         assert_eq!(projects.err().unwrap().description(), "connection refused");
+    }
+
+    #[test]
+    fn environment_variable_error() {
+        env::remove_var("CIRCLECI_TOKEN");
+        let projects = fetch_projects();
+        assert!(projects.is_err());
+        assert_eq!(projects.err().unwrap().description(),
+                   "environment variable not found");
     }
 }

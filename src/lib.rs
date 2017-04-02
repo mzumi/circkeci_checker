@@ -1,5 +1,3 @@
-#![feature(plugin)]
-#![plugin(dotenv_macros)]
 extern crate hyper;
 extern crate hyper_native_tls;
 extern crate rustc_serialize;
