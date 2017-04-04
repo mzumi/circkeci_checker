@@ -1,5 +1,3 @@
-extern crate dotenv;
-
 use hyper::Client;
 use hyper::net::HttpsConnector;
 use hyper_native_tls::NativeTlsClient;
@@ -50,7 +48,7 @@ mod tests {
 
     #[test]
     fn valid_json_response() {
-        dotenv::dotenv().expect("Failed to read .env file");
+        env::set_var("CIRCLECI_TOKEN", "xxxxxx");
         let token = env::var("CIRCLECI_TOKEN").unwrap();
 
         let json = r#"
@@ -97,7 +95,7 @@ mod tests {
 
     #[test]
     fn invalid_json_response() {
-        dotenv::dotenv().expect("Failed to read .env file");
+        env::set_var("CIRCLECI_TOKEN", "xxxxxx");
         let token = env::var("CIRCLECI_TOKEN").unwrap();
         let json = r#"
         
@@ -133,7 +131,7 @@ mod tests {
 
     #[test]
     fn connection_error() {
-        dotenv::dotenv().expect("Failed to read .env file");
+        env::set_var("CIRCLECI_TOKEN", "xxxxxx");
         let projects = fetch_projects();
         assert!(projects.is_err());
         assert_eq!(projects.err().unwrap().description(), "connection refused");
