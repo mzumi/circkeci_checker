@@ -56,7 +56,7 @@ after_success: |
 before_deploy:
   - cargo build --target $TARGET --release
   - mkdir "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}"
-  - cp target/$TARGET/release/${PROJECT_NAME} README.md "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}"
+  - cp target/$TARGET/release/circleci-checker README.md "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}"
   - zip "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}.zip" -r "${PROJECT_NAME}-${TRAVIS_TAG}-${TARGET}"
 
 deploy:
