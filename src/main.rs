@@ -1,11 +1,9 @@
 extern crate circleci_checker;
 extern crate rustc_serialize;
-extern crate dotenv;
 
 use std::error::Error;
 
 fn main() {
-    dotenv::dotenv().expect("Failed to read .env file");
     match print_projects() {
         Ok(()) => return,
         Err(ref error) => println!("{}", error.description()),

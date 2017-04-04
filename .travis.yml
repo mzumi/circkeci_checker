@@ -3,7 +3,7 @@ cache: cargo
 
 env:
   global:
-    - PROJECT_NAME=circleci-checker
+    - PROJECT_NAME=circleci_checker
 
 script: cargo test -- --test-threads=1
 
@@ -28,8 +28,6 @@ matrix:
       rust: stable
       env: TARGET=x86_64-unknown-linux-gnu
 
-before_script:
-  - cp .env.sample .env
 addons:
   apt:
     packages:
